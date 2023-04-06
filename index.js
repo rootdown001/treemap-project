@@ -30,8 +30,8 @@ const margin = {
 }
 
 // define w & h of svg
-const svg_w = 1200 - margin.left - margin.right;
-const svg_h = 620 - margin.top - margin.bottom;
+const svg_w = 580 - margin.left - margin.right;
+const svg_h = 250 - margin.top - margin.bottom;
 
 // define padding variable
 const paddingHor = 30;
@@ -46,60 +46,23 @@ const color = ["#a7dfe5", "#e6b8b3", "#9dc8ae", "#d1bbdf", "#d7dab7", "#aac4e2",
 // enter d3.json api
 d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json")
     .then(dataObj => {
+    console.log("🚀 ~ file: index.js:49 ~ dataObj:", dataObj)
 
-        console.log(dataObj)
-        console.log(dataObj.children)
-
-
-
-// set base temp
-    const baseTemp = dataObj.baseTemperature    
+        // data Movies
+        const dataMovies = dataObj.children[0]
+        console.log("🚀 ~ file: index.js:54 ~ dataMovies:", dataMovies)
         
-// create x Scale
-    const xScale = d3.scaleBand()
-        .range([0, svg_w - 60])
-        .domain(dataObj.monthlyVariance.map(val => val.year))
-        .padding(0)
+        // define root for treemap call
+        const root = d3.hierarchy(dataMovies)
+                        .sum((d) => d.hasOwnProperty("value") ? d.value : 0) 
 
+        // define treemap
+        const treemap = d3.treemap()
+                            .size([580 , 250])
+                            .paddingOuter(10);
 
-// create y scale
-    const yScale = d3.scaleBand()
-        .range([svg_h - 30, 0])
-        .domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].reverse())
-        .padding(0)
-
-// create color scale
-    const varianceArr = [];
-    for (let obj of dataObj.monthlyVariance) {
-        varianceArr.push(obj.variance)
-    }
-
-    const varianceExtent = d3.extent(varianceArr)
-
-    const rectColor = d3.scaleSequential(d3.interpolateInferno)
-                        .domain([varianceExtent[0], varianceExtent[1]])
-
-    
-// create xAxis
-    const xAxis = d3.axisBottom()
-                        .scale(xScale)
-                        // use map to get array of all years from data object
-                        .tickValues(xScale.domain()
-                        // use filter to return an array of years by decade
-                        .filter(value => value % 10 === 0))
-
-// create y axis
-    const yAxis = d3.axisLeft()
-                        .scale(yScale)
-                        .tickValues(yScale.domain())
-                        .tickFormat(m => {
-                            const date = new Date(0);
-                            date.setUTCMonth(m);
-                            const formatDate = d3.utcFormat("%B")
-                            // console.log(formatDate(date))
-                            return formatDate(date)
-                        })
-
+        // call root from treemap
+        treemap(root);
 
     const heading = d3.select(".forSvg")
                         .append("heading")
@@ -112,86 +75,131 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
                     .append("g")
                     .attr("transform", "translate(" + 30 + ", " + 0 + ")");
 
+    svg.selectAll("rect.node")
+            .data(root.descendants)
+            .enter()
+            .append("rect")
+            .classed("node", true)
+            .attr("x", (d) => d.x0)
+            .attr("y", (d) => d.y0)
+            .attr("width", (d) => d.x1 - d.x0)
+            .attr("height", (d) => d.y1 - d.y0)
+
+// // create color scale
+//     const varianceArr = [];
+//     for (let obj of dataObj.monthlyVariance) {
+//         varianceArr.push(obj.variance)
+//     }
+
+//     const varianceExtent = d3.extent(varianceArr)
+
+//     const rectColor = d3.scaleSequential(d3.interpolateInferno)
+//                         .domain([varianceExtent[0], varianceExtent[1]])
+
     
-    // create tooltip div in .forSvg
-    const tooltip = d3.select(".forSvg")
-                    .append("div")
-                    .attr("id", "tooltip")
+// // create xAxis
+//     const xAxis = d3.axisBottom()
+//                         .scale(xScale)
+//                         // use map to get array of all years from data object
+//                         .tickValues(xScale.domain()
+//                         // use filter to return an array of years by decade
+//                         .filter(value => value % 10 === 0))
+
+// // create y axis
+//     const yAxis = d3.axisLeft()
+//                         .scale(yScale)
+//                         .tickValues(yScale.domain())
+//                         .tickFormat(m => {
+//                             const date = new Date(0);
+//                             date.setUTCMonth(m);
+//                             const formatDate = d3.utcFormat("%B")
+//                             // console.log(formatDate(date))
+//                             return formatDate(date)
+//                         })
+
+
+
+
+    
+//     // create tooltip div in .forSvg
+//     const tooltip = d3.select(".forSvg")
+//                     .append("div")
+//                     .attr("id", "tooltip")
  
 
-    // - RUN THROUGH DATA AND CREATE MAP-
-    svg.selectAll("rect")
-        .data(dataObj.monthlyVariance)
-        .enter()
-        .append("rect")
-        .attr("x", (d) => {
-            return xScale((d.year))})
-        .attr("y", (d) => {
-            return yScale(d.month - 1)})
-        .attr("width", (d) => xScale.bandwidth(d.year))
-        .attr("height", (d) => yScale.bandwidth((d.month - 1)))
-        .attr("fill", (d) => rectColor(d.variance))
-        .attr("transform", "translate(" + (margin.left + adj) + ", " + 0 + ")")
-        .attr("class", "cell")
-        .attr("data-month", (d) => d.month - 1)
-        .attr("data-year", (d) => d.year)
-        .attr("data-temp", (d) => d.variance)
-        .on("mouseover", function(event, d) {
-            const date = new Date(d.year, (d.month - 1))
-            tooltip.html(d3.utcFormat("%B, %Y")(date) + "<br>" + "Variance: " + d.variance)
-                .style("display", "block")
-                .attr("data-year", d.year)
-                .style("left", event.pageX + 20 + "px")
-                .style("top", event.pageY - 80 + "px")
-                .style("background-color", "lightgray")
-        })
-        .on("mouseout", function() {
-            tooltip.style("display", "none")
-        })
+//     // - RUN THROUGH DATA AND CREATE MAP-
+//     svg.selectAll("rect")
+//         .data(dataObj.monthlyVariance)
+//         .enter()
+//         .append("rect")
+//         .attr("x", (d) => {
+//             return xScale((d.year))})
+//         .attr("y", (d) => {
+//             return yScale(d.month - 1)})
+//         .attr("width", (d) => xScale.bandwidth(d.year))
+//         .attr("height", (d) => yScale.bandwidth((d.month - 1)))
+//         .attr("fill", (d) => rectColor(d.variance))
+//         .attr("transform", "translate(" + (margin.left + adj) + ", " + 0 + ")")
+//         .attr("class", "cell")
+//         .attr("data-month", (d) => d.month - 1)
+//         .attr("data-year", (d) => d.year)
+//         .attr("data-temp", (d) => d.variance)
+//         .on("mouseover", function(event, d) {
+//             const date = new Date(d.year, (d.month - 1))
+//             tooltip.html(d3.utcFormat("%B, %Y")(date) + "<br>" + "Variance: " + d.variance)
+//                 .style("display", "block")
+//                 .attr("data-year", d.year)
+//                 .style("left", event.pageX + 20 + "px")
+//                 .style("top", event.pageY - 80 + "px")
+//                 .style("background-color", "lightgray")
+//         })
+//         .on("mouseout", function() {
+//             tooltip.style("display", "none")
+//         })
 
-    // -AXIS-
-    // add x axis
-    svg.append("g")
-        .attr("id", "x-axis")
-        .attr("transform", "translate(60, " + (560 - adj) + ")")
-        .call(xAxis)
+//     // -AXIS-
+//     // add x axis
+//     svg.append("g")
+//         .attr("id", "x-axis")
+//         .attr("transform", "translate(60, " + (560 - adj) + ")")
+//         .call(xAxis)
 
-    // add y axis
-    svg.append("g")
-        .attr("id", "y-axis")
-        .attr("transform", "translate(" + (60) + ", " + (0) + ")")
-        .call(yAxis)
+//     // add y axis
+//     svg.append("g")
+//         .attr("id", "y-axis")
+//         .attr("transform", "translate(" + (60) + ", " + (0) + ")")
+//         .call(yAxis)
 
 
-    // - TITLES-
-    // create title
-    heading.append('h2')
-        .attr("id", "title")
-        .text('Monthly Global Land to Surface Temperature');
+//     // - TITLES-
+//     // create title
+//     heading.append('h2')
+//         .attr("id", "title")
+//         .text('Monthly Global Land to Surface Temperature');
 
-    // create subtitle
-    heading.append('h3')
-        .attr("id", "description")
-        .text('Variation from Base Temperature: 1753 - 2015');
+//     // create subtitle
+//     heading.append('h3')
+//         .attr("id", "description")
+//         .text('Variation from Base Temperature: 1753 - 2015');
 
-    // title fo y axis
-    svg.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -280)
-        .attr("y", 1)
-        .attr("font-size", "1rem")
-        .text("Months")
+//     // title fo y axis
+//     svg.append("text")
+//         .attr("transform", "rotate(-90)")
+//         .attr("x", -280)
+//         .attr("y", 1)
+//         .attr("font-size", "1rem")
+//         .text("Months")
 
-    // create legend
-    const legend = d3.legendColor()
-                    .scale(rectColor)
-                    .cells(8)
+//     // create legend
+//     const legend = d3.legendColor()
+//                     .scale(rectColor)
+//                     .cells(8)
 
-    // add g element and call legend obj
-    svg.append("g")
-        .attr("id", "legend")
-        .attr("transform", "translate(" + (svg_w + 20) + "," + (svg_h - 350) + ")")
-        .call(legend);
+//     // add g element and call legend obj
+//     svg.append("g")
+//         .attr("id", "legend")
+//         .attr("transform", "translate(" + (svg_w + 20) + "," + (svg_h - 350) + ")")
+//         .call(legend);
     
 
     // -EXIT-
