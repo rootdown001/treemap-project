@@ -24,14 +24,14 @@
 // margins of svg
 const margin = {
     top: 30,
-    right: 100,
+    right: 30,
     bottom: 30,
     left: 30
 }
 
 // define w & h of svg
-const svg_w = 1400 - margin.left - margin.right;
-const svg_h = 730 - margin.top - margin.bottom;
+const svg_w = 1200 - margin.left - margin.right;
+const svg_h = 600 - margin.top - margin.bottom;
 
 // define padding variable
 const paddingHor = 30;
@@ -61,7 +61,7 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
         // define treemap
         const treemap = d3.treemap()
                             .size([svg_w, svg_h])
-                            .paddingOuter(10);
+                            .padding(1);
 
         // call root from treemap
         treemap(root);
@@ -85,7 +85,7 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
             .attr("y", (d) => d.y0)
             .attr("width", (d) => d.x1 - d.x0)
             .attr("height", (d) => d.y1 - d.y0)
-            .style("stroke", "black")
+            // .style("stroke", "black")
             .style("fill", "#69b3a2")
 
 // // create color scale

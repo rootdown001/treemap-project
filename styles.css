@@ -1,22 +1,22 @@
 body {
-    display:flex;
+    display: flex;
     background-color: gray;
 
 }
 
 .holder {
     display: flex;
-    width: 1400px;
-    height: 730px;
+    width: 1300px;
+    height: 700px;
    
 
     background-color: gray;
 }
 
 .forSvg {
-    width: 1400px;
-    height: 730px;
-    background-color: white;
+    width: 1250px;
+    height: 650px;
+    background-color: lightgray;
 }
 
 heading {
@@ -45,10 +45,4 @@ svg {
     border-radius: 5px;
 }
 
-#x-axis {
-    font-size: 0.8em;
-}
-
-#y-axis {
-    font-size: 0.8em;
-}
+ 
