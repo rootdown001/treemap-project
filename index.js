@@ -81,6 +81,7 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
             .data(root.leaves())
             .enter()
             .append("rect")
+            .attr("class", "tile")
             .attr("x", (d) => d.x0)
             .attr("y", (d) => d.y0)
             .attr("width", (d) => d.x1 - d.x0)
