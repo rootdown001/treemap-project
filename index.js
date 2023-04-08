@@ -176,7 +176,7 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
 
     // - TITLES-
     // create title
-    heading.append('h2')
+    heading.append('h1')
         .attr("id", "title")
         .text('Movie Sales');
 
