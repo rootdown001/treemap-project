@@ -30,8 +30,8 @@ const margin = {
 }
 
 // define w & h of svg
-const svg_w = 580 - margin.left - margin.right;
-const svg_h = 250 - margin.top - margin.bottom;
+const svg_w = 1400 - margin.left - margin.right;
+const svg_h = 730 - margin.top - margin.bottom;
 
 // define padding variable
 const paddingHor = 30;
@@ -53,19 +53,21 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
         console.log("🚀 ~ file: index.js:54 ~ dataMovies:", dataMovies)
         
         // define root for treemap call
-        const root = d3.hierarchy(dataMovies)
-                        .sum((d) => d.hasOwnProperty("value") ? d.value : 0) 
+        const root = d3.hierarchy(dataObj)
+                        .sum((d) => d.hasOwnProperty("value") ? d.value : 0)
+                        .sort((a, b) => b.value - a.value);
+        console.log("🚀 ~ file: index.js:58 ~ root:", root)
 
         // define treemap
         const treemap = d3.treemap()
-                            .size([580 , 250])
+                            .size([svg_w, svg_h])
                             .paddingOuter(10);
 
         // call root from treemap
         treemap(root);
 
-    const heading = d3.select(".forSvg")
-                        .append("heading")
+    // const heading = d3.select(".forSvg")
+    //                     .append("heading")
 
     // create svg obj - give dimensions
     const svg = d3.select(".forSvg")
@@ -75,15 +77,16 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
                     .append("g")
                     .attr("transform", "translate(" + 30 + ", " + 0 + ")");
 
-    svg.selectAll("rect.node")
-            .data(root.descendants)
+    svg.selectAll("rect")
+            .data(root.leaves())
             .enter()
             .append("rect")
-            .classed("node", true)
             .attr("x", (d) => d.x0)
             .attr("y", (d) => d.y0)
             .attr("width", (d) => d.x1 - d.x0)
             .attr("height", (d) => d.y1 - d.y0)
+            .style("stroke", "black")
+            .style("fill", "#69b3a2")
 
 // // create color scale
 //     const varianceArr = [];
