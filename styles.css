@@ -7,7 +7,7 @@ body {
 .holder {
     display: flex;
     width: 1300px;
-    height: 700px;
+    height: 800px;
    
 
     background-color: gray;
@@ -15,7 +15,7 @@ body {
 
 .forSvg {
     width: 1250px;
-    height: 650px;
+    height: 750px;
     background-color: lightgray;
 }
 

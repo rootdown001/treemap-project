@@ -31,7 +31,7 @@ const margin = {
 
 // define w & h of svg
 const svg_w = 1200 - margin.left - margin.right;
-const svg_h = 600 - margin.top - margin.bottom;
+const svg_h = 660 - margin.top - margin.bottom;
 
 // define padding variable
 const paddingHor = 30;
@@ -66,8 +66,8 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
         // call root from treemap
         treemap(root);
 
-    // const heading = d3.select(".forSvg")
-    //                     .append("heading")
+    const heading = d3.select(".forSvg")
+                        .append("heading")
 
     // create svg obj - give dimensions
     const svg = d3.select(".forSvg")
@@ -174,16 +174,16 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
 //         .call(yAxis)
 
 
-//     // - TITLES-
-//     // create title
-//     heading.append('h2')
-//         .attr("id", "title")
-//         .text('Monthly Global Land to Surface Temperature');
+    // - TITLES-
+    // create title
+    heading.append('h2')
+        .attr("id", "title")
+        .text('Movie Sales');
 
-//     // create subtitle
-//     heading.append('h3')
-//         .attr("id", "description")
-//         .text('Variation from Base Temperature: 1753 - 2015');
+    // create subtitle
+    heading.append('h3')
+        .attr("id", "description")
+        .text('Top 100 Highest Grossing Movies Grouped by Genre');
 
 //     // title fo y axis
 //     svg.append("text")
