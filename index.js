@@ -60,7 +60,7 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
 
         // define treemap
         const treemap = d3.treemap()
-                            .size([svg_w, svg_h])
+                            .size([svg_w - 200, svg_h])
                             .padding(1);
 
         // call root from treemap
@@ -69,11 +69,13 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
     const heading = d3.select(".forSvg")
                         .append("heading")
 
+
+
     // create svg obj - give dimensions
     const svg = d3.select(".forSvg")
                     .append("svg")
                     .attr("height", svg_h + margin.top + margin.bottom)
-                    .attr("width", svg_w + margin.left + margin.right)
+                    .attr("width", svg_w)
                     .append("g")
                     .attr("transform", "translate(" + 30 + ", " + 0 + ")");
 
@@ -81,6 +83,15 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
     const tooltip = d3.select(".forSvg")
                     .append("div")
                     .attr("id", "tooltip")
+
+    // create legend div in .forSvg
+    const legend = d3.select("svg")
+                    .append("g")
+                    .attr("id", "legend")
+                    // .attr("transform", "translate(, 20)")
+
+                    
+    
 
     // make array of categories
     const catArr = root.leaves().map((nodes) => nodes.data.category)
@@ -91,12 +102,32 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
       });
       console.log("🚀 ~ file: index.js:92 ~ categories ~ categories:", categories)
       
+    // make array of values
+    const valArr = root.leaves().map((nodes) => nodes.value)
+        console.log("🚀 ~ file: index.js:96 ~ valArr:", valArr)
+        
+    // make array of values
+    // const values = valArr.filter(function (value, index, self) {
+    //     return self.indexOf(value) === index;
+    //     });
+    // console.log("🚀 ~ file: index.js:101 ~ values ~ values:", values)
+
+    // // find value min & max
+    // const extValues = d3.extent(values)
+    // console.log("🚀 ~ file: index.js:105 ~ extValues:", extValues)
+  
+
+
 
     // prepare a color scale
-    var color = d3.scaleOrdinal()
+    const color = d3.scaleOrdinal()
                     .domain(categories)
                     .range(colorArr)
 
+      // And an opacity scale
+    // const opacity = d3.scaleLinear()
+    //                 .domain(extValues)
+    //                 .range([.5,1])
 
     svg.selectAll("rect")
             .data(root.leaves())
@@ -112,6 +143,7 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
             .attr("height", (d) => d.y1 - d.y0)
             // .style("stroke", "black")
             .style("fill", (d) => color(d.data.category))
+            //.style("opacity", (d) => opacity(d.value))
             .on("mouseover", function(event, d) {
                 tooltip.html("Name: " + d.data.name + "<br>" + "Category: " + d.data.category + "<br>" + "Value: " + d.value)
                         .style("display", "block")
@@ -126,65 +158,6 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
 
 
 
-// // create color scale
-//     const varianceArr = [];
-//     for (let obj of dataObj.monthlyVariance) {
-//         varianceArr.push(obj.variance)
-//     }
-
-//     const varianceExtent = d3.extent(varianceArr)
-
-//     const rectColor = d3.scaleSequential(d3.interpolateInferno)
-//                         .domain([varianceExtent[0], varianceExtent[1]])
-
-
-    
- 
-
-//     // - RUN THROUGH DATA AND CREATE MAP-
-//     svg.selectAll("rect")
-//         .data(dataObj.monthlyVariance)
-//         .enter()
-//         .append("rect")
-//         .attr("x", (d) => {
-//             return xScale((d.year))})
-//         .attr("y", (d) => {
-//             return yScale(d.month - 1)})
-//         .attr("width", (d) => xScale.bandwidth(d.year))
-//         .attr("height", (d) => yScale.bandwidth((d.month - 1)))
-//         .attr("fill", (d) => rectColor(d.variance))
-//         .attr("transform", "translate(" + (margin.left + adj) + ", " + 0 + ")")
-//         .attr("class", "cell")
-//         .attr("data-month", (d) => d.month - 1)
-//         .attr("data-year", (d) => d.year)
-//         .attr("data-temp", (d) => d.variance)
-//         .on("mouseover", function(event, d) {
-//             const date = new Date(d.year, (d.month - 1))
-//             tooltip.html(d3.utcFormat("%B, %Y")(date) + "<br>" + "Variance: " + d.variance)
-//                 .style("display", "block")
-//                 .attr("data-year", d.year)
-//                 .style("left", event.pageX + 20 + "px")
-//                 .style("top", event.pageY - 80 + "px")
-//                 .style("background-color", "lightgray")
-//         })
-//         .on("mouseout", function() {
-//             tooltip.style("display", "none")
-//         })
-
-//     // -AXIS-
-//     // add x axis
-//     svg.append("g")
-//         .attr("id", "x-axis")
-//         .attr("transform", "translate(60, " + (560 - adj) + ")")
-//         .call(xAxis)
-
-//     // add y axis
-//     svg.append("g")
-//         .attr("id", "y-axis")
-//         .attr("transform", "translate(" + (60) + ", " + (0) + ")")
-//         .call(yAxis)
-
-
     // - TITLES-
     // create title
     heading.append('h1')
@@ -196,23 +169,42 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
         .attr("id", "description")
         .text('Top 100 Highest Grossing Movies Grouped by Genre');
 
-//     // title fo y axis
-//     svg.append("text")
-//         .attr("transform", "rotate(-90)")
-//         .attr("x", -280)
-//         .attr("y", 1)
-//         .attr("font-size", "1rem")
-//         .text("Months")
+    // building legend from scratch so can add rect classes for fCC tests
+    const legendHolder = legend.append("g")
+                                //.attr("transform", "translate(" + (svg_w - 80) + "," + (svg_h - 350) + ")")
+                                .attr("transform", "translate(" + 1000 + "," + 200 + ")")
+                                .selectAll("g")
+                                .data(categories)
+                                .enter()
+                                .append("g")
+                                // .attr("transform", function(d, i) {
+                                //     return "translate(200, " + 200 +")"
+                                // })
 
-//     // create legend
+    legendHolder.append("rect")
+                .attr('width', 40)
+                .attr('height', 30)
+                .attr('class', 'legend-item')
+                .attr('fill', function (d) {
+                return color(d);
+                });
+
+
+
+
+
+
+// //     // create legend
 //     const legend = d3.legendColor()
-//                     .scale(rectColor)
-//                     .cells(8)
+//                     .scale(color)
+//                     .cells(7)
+
 
 //     // add g element and call legend obj
 //     svg.append("g")
 //         .attr("id", "legend")
-//         .attr("transform", "translate(" + (svg_w + 20) + "," + (svg_h - 350) + ")")
+//         .attr("transform", "translate(" + (svg_w - 80) + "," + (svg_h - 350) + ")")
+
 //         .call(legend);
     
 
