@@ -40,7 +40,7 @@ const adj = 30;
 
 
 // define colors for map - pastal 7 colors created using "i want hue"
-const color = ["#a7dfe5", "#e6b8b3", "#9dc8ae", "#d1bbdf", "#d7dab7", "#aac4e2", "#acc2bd"]
+const colorArr = ["#a7dfe5", "#e6b8b3", "#9dc8ae", "#d1bbdf", "#d7dab7", "#aac4e2", "#acc2bd"]
 
  
 // enter d3.json api
@@ -77,17 +77,54 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
                     .append("g")
                     .attr("transform", "translate(" + 30 + ", " + 0 + ")");
 
+    // create tooltip div in .forSvg
+    const tooltip = d3.select(".forSvg")
+                    .append("div")
+                    .attr("id", "tooltip")
+
+    // make array of categories
+    const catArr = root.leaves().map((nodes) => nodes.data.category)
+        console.log("🚀 ~ file: index.js:87 ~ catArr:", catArr)
+        
+    const categories = catArr.filter(function (category, index, self) {
+        return self.indexOf(category) === index;
+      });
+      console.log("🚀 ~ file: index.js:92 ~ categories ~ categories:", categories)
+      
+
+    // prepare a color scale
+    var color = d3.scaleOrdinal()
+                    .domain(categories)
+                    .range(colorArr)
+
+
     svg.selectAll("rect")
             .data(root.leaves())
             .enter()
             .append("rect")
             .attr("class", "tile")
+            .attr("data-name", (d) => d.data.name)
+            .attr("data-category", (d) => d.data.category)
+            .attr("data-value", (d) => d.value)
             .attr("x", (d) => d.x0)
             .attr("y", (d) => d.y0)
             .attr("width", (d) => d.x1 - d.x0)
             .attr("height", (d) => d.y1 - d.y0)
             // .style("stroke", "black")
-            .style("fill", "#69b3a2")
+            .style("fill", (d) => color(d.data.category))
+            .on("mouseover", function(event, d) {
+                tooltip.html("Name: " + d.data.name + "<br>" + "Category: " + d.data.category + "<br>" + "Value: " + d.value)
+                        .style("display", "block")
+                        .attr("data-value", d.data.value)
+                        .style("left", event.pageX + 20 + "px")
+                        .style("top", event.pageY - 80 + "px")
+                        .style("background-color", "lightgray")
+            })
+            .on("mouseout", function() {
+                            tooltip.style("display", "none")
+            })
+
+
 
 // // create color scale
 //     const varianceArr = [];
@@ -100,35 +137,8 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
 //     const rectColor = d3.scaleSequential(d3.interpolateInferno)
 //                         .domain([varianceExtent[0], varianceExtent[1]])
 
-    
-// // create xAxis
-//     const xAxis = d3.axisBottom()
-//                         .scale(xScale)
-//                         // use map to get array of all years from data object
-//                         .tickValues(xScale.domain()
-//                         // use filter to return an array of years by decade
-//                         .filter(value => value % 10 === 0))
-
-// // create y axis
-//     const yAxis = d3.axisLeft()
-//                         .scale(yScale)
-//                         .tickValues(yScale.domain())
-//                         .tickFormat(m => {
-//                             const date = new Date(0);
-//                             date.setUTCMonth(m);
-//                             const formatDate = d3.utcFormat("%B")
-//                             // console.log(formatDate(date))
-//                             return formatDate(date)
-//                         })
-
-
-
 
     
-//     // create tooltip div in .forSvg
-//     const tooltip = d3.select(".forSvg")
-//                     .append("div")
-//                     .attr("id", "tooltip")
  
 
 //     // - RUN THROUGH DATA AND CREATE MAP-

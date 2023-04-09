@@ -34,9 +34,9 @@ svg {
     position: absolute;
     left: 0;
     top: 0;
-    width: 130px;
-    height: 50px;
-    font-size: 1.2em;
+    /* width: 150px;
+    height: 60px; */
+    font-size: 0.9em;
     display: none;
     border: 2px solid darkgray;
     padding-top: 5px;
