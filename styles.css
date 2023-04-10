@@ -5,7 +5,7 @@ html, body {
 
 body {
     display: flex;
-    background-color: gray;
+    background-color: white;
 
 }
 
@@ -13,18 +13,17 @@ body {
     display: flex;
     width: 1300px;
     height: 800px;
-   margin-left: auto;
-   margin-right: auto;
-
-    background-color: gray;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    /* border: 1px solid gray; */
+    /* background-color: gray; */
 }
 
 .forSvg {
-    width: 1250px;
+    width: 1200px;
     display: block;
-    background-color: lightgray;
-    /* margin-left: auto;
-    margin-right: auto; */
+    background-color: white;
 }
 
 heading {
@@ -34,16 +33,12 @@ heading {
 svg {
     display: flex;
     background-color: white;
-    /* margin-left: auto;
-    margin-right: auto; */
 }
 
 #tooltip {
     position: absolute;
     left: 0;
     top: 0;
-    /* width: 150px;
-    height: 60px; */
     font-size: 0.9em;
     display: none;
     border: 2px solid darkgray;
@@ -55,8 +50,12 @@ svg {
     border-radius: 5px;
 }
 
-#legend {
-        width: 20px;
-    height: 60px;
+/* #legend {
+    width: 200px;
+    height: 300px;
     background-color: aqua;
+} */
+
+.cellTitle {
+    font-size: 0.8rem;
 }
