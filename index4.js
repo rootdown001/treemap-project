@@ -55,17 +55,17 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
                     .attr("height", svg_h + margin.top + margin.bottom)
                     .attr("width", svg_w)
                     //.append("g")
-                    .attr("transform", "translate(" + 30 + ", " + 20 + ")");
+                    
 
     // create tooltip div in .forSvg
     const tooltip = d3.select(".forSvg")
                     .append("div")
                     .attr("id", "tooltip")
 
-    // create legend div in .forSvg
-    const legend = d3.select("svg")
-                    .append("g")
-                    .attr("id", "legend")
+    // // create legend div in .forSvg
+    // const legend = d3.select("svg")
+    //                 .append("g")
+    //                 .attr("id", "legend")
                     
 
     // make array of categories
@@ -87,14 +87,18 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
     
 
 
-    svg.selectAll("rect")
+    const cell = svg.selectAll("g")
         .data(root.leaves())
         .enter()
-        .append("rect")
+        .append("g")
         .attr("class", "tile")
+ 
+
+    cell.append("rect")        
         .attr("data-name", (d) => d.data.name)
         .attr("data-category", (d) => d.data.category)
         .attr("data-value", (d) => d.value)
+        .attr("class", "tile")
         .attr("x", (d) => d.x0)
         .attr("y", (d) => d.y0)
         .attr("width", (d) => d.x1 - d.x0)
@@ -147,6 +151,14 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
     heading.append('h3')
         .attr("id", "description")
         .text('Top 100 Highest Grossing Movies Grouped by Genre');
+
+
+
+
+        // create legend div in .forSvg
+        const legend = d3.select("svg")
+        .append("g")
+        .attr("id", "legend")
 
     const legendHolder = legend.append("g")
                                 .attr("transform", "translate(" + 1040 + "," + 0 + ")")
