@@ -38,7 +38,7 @@ d3.json("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-
 
         // define treemap
         const treemap = d3.treemap()
-                            .size([svg_w - 240, svg_h])
+                            .size([svg_w - 190, svg_h])
                             .padding(1);
 
         // call root from treemap
